@@ -54,3 +54,4 @@ public class JuegoSokoban {
         this.nivelesDisponibles.add(n);
     }
 }
+
