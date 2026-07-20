@@ -12,7 +12,9 @@ import java.util.List;
  *
  * <p>Una lista de instancias de {@link Accion} fue mantenida internamente,
  * permitiendo que las acciones sean registradas, removidas y ejecutadas
- * en el orden en que fueron agregadas.</p>
+ * en el orden en que fueron agregadas. A diferencia de un gestor de acciones
+ * de un solo disparo, las acciones registradas fueron concebidas como permanentes:
+ * son ejecutadas en cada visita a la casilla que las contiene.</p>
  *
  * <p>La responsabilidad de detonar acciones dinámicas fue delegada a esta clase
  * por el {@code GestorColisiones} tras un movimiento válido,
@@ -21,7 +23,7 @@ import java.util.List;
 public class GestorAcciones {
 
     /**
-     * La colección de acciones pendientes fue almacenada como una lista ordenada.
+     * La colección de acciones permanentes fue almacenada como una lista ordenada.
      * El orden de inserción fue preservado para garantizar la precedencia
      * de ejecución definida por el motor del juego.
      */
@@ -66,17 +68,38 @@ public class GestorAcciones {
     }
 
     /**
-     * Todas las acciones registradas fueron ejecutadas en orden de inserción.
+     * Las acciones correspondientes a la casilla fueron ejecutadas con el contexto completo
+     * del movimiento que las activó.
      *
-     * <p>El método {@link Accion#iniciarAccion()} fue invocado sobre cada
-     * elemento de la lista. La lista fue vaciada tras la ejecución para
-     * evitar que las acciones sean detonadas múltiples veces.</p>
+     * <p>El método {@link Accion#iniciarAccion(Casilla, Tablero, Casilla)} fue invocado
+     * sobre cada elemento de la lista en orden de inserción. Las acciones no fueron eliminadas
+     * tras la ejecución, dado que fueron concebidas como comportamiento permanente de la casilla:
+     * se detonan en cada visita.</p>
+     *
+     * @param casillaActual la casilla que contiene las acciones y que fue pisada por la entidad
+     * @param tablero       el tablero activo sobre el que las acciones fueron ejecutadas
+     * @param entidad       la entidad ({@code Personaje} o {@code Caja}) que activó las acciones
      */
-    public void ejecutarAcciones() {
+    public void ejecutarAcciones(Casilla casillaActual, Tablero tablero, Casilla entidad) {
         for (Accion accion : acciones) {
-            accion.iniciarAccion();
+            accion.iniciarAccion(casillaActual, tablero, entidad);
         }
-        acciones.clear();
+    }
+
+    /**
+     * Las acciones fueron ejecutadas sin contexto de entidad, como puente de compatibilidad.
+     *
+     * <p>Esta sobrecarga fue provista para mantener compatibilidad durante la migración
+     * del {@code GestorColisiones} hacia la firma contextual completa. Su uso fue
+     * considerado provisional: el método contextual es el contrato definitivo.</p>
+     *
+     * @deprecated La sobrecarga contextual {@link #ejecutarAcciones(Casilla, Tablero, Casilla)}
+     *             debe ser utilizada preferentemente. Esta variante fue conservada
+     *             exclusivamente como puente de migración.
+     */
+    @Deprecated
+    public void ejecutarAcciones() {
+        ejecutarAcciones(null, null, null);
     }
 
     /**

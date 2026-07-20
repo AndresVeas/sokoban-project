@@ -7,66 +7,99 @@ import ec.edu.epn.sokoban.model.interfaces.Accion;
  * de la interfaz {@link Accion} correspondiente al comportamiento de desplazamiento
  * instantáneo entre portales.
  *
- * <p>Una acción de tipo {@code Teletransportacion} fue diseñada para ser detonada
- * cuando el personaje pisa una casilla de tipo {@code Portal} que posee un destino
- * vinculado. La responsabilidad del traslado fue encapsulada en esta clase
- * dentro del Patrón Strategy.</p>
+ * <p>Las coordenadas del punto de destino ({@code filaDestino}, {@code columnaDestino})
+ * fueron inyectadas a través del constructor, permitiendo que una misma clase
+ * modele cualquier par de portales del escenario.</p>
  *
- * <p>El origen y el destino del teletransporte fueron registrados como {@link Casilla}
- * para preservar la compatibilidad con el modelo base, dado que {@code Portal}
- * es una subclase de {@code Casilla}. El tipo concreto podrá ser restringido
- * a {@code Portal} cuando dicha clase sea formalmente integrada al paquete escenario,
- * tal como fue especificado en el diagrama UML revisado.</p>
+ * <p>La regla de negocio fue establecida con precisión: únicamente las instancias
+ * de {@link Caja} son afectadas por esta acción. Si el personaje pisa el portal,
+ * la teletransportación es ignorada de forma silenciosa.</p>
  */
 public class Teletransportacion implements Accion {
 
-    /** La casilla de origen (portal) desde la que la teletransportación fue iniciada. */
-    private final Casilla casillaOrigen;
-
-    /** La casilla de destino (portal) a la que el personaje será teletransportado. */
-    private final Casilla casillaDestino;
+    /**
+     * La fila del punto de destino al que la caja será teletransportada.
+     */
+    private final int filaDestino;
 
     /**
-     * Una instancia de teletransportación fue inicializada con el par de casillas
-     * que definen el recorrido del desplazamiento.
-     *
-     * @param casillaOrigen  la casilla ({@code Portal}) desde la que la acción fue detonada
-     * @param casillaDestino la casilla ({@code Portal}) a la que el personaje fue redirigido
+     * La columna del punto de destino al que la caja será teletransportada.
      */
-    public Teletransportacion(Casilla casillaOrigen, Casilla casillaDestino) {
-        this.casillaOrigen = casillaOrigen;
-        this.casillaDestino = casillaDestino;
+    private final int columnaDestino;
+
+    /**
+     * Una instancia de teletransportación fue inicializada con las coordenadas exactas
+     * del punto de salida (Punto B) del portal.
+     *
+     * @param filaDestino    la fila de la casilla destino del portal
+     * @param columnaDestino la columna de la casilla destino del portal
+     */
+    public Teletransportacion(int filaDestino, int columnaDestino) {
+        this.filaDestino = filaDestino;
+        this.columnaDestino = columnaDestino;
     }
 
     /**
-     * La acción de teletransportación fue iniciada.
+     * La acción de teletransportación fue iniciada sobre la entidad proporcionada.
      *
-     * <p>El personaje fue concebido para ser reubicado desde las coordenadas
-     * de {@code casillaOrigen} hacia las coordenadas de {@code casillaDestino}.
-     * La ejecución efectiva fue prevista para ser coordinada por el motor
-     * de juego que invoque este método.</p>
+     * <p>La regla de negocio fue aplicada estrictamente: la entidad recibida fue verificada
+     * como instancia de {@link Caja}. Si la verificación falla (ej. es un {@code Personaje}),
+     * la acción fue ignorada sin efecto colateral.</p>
+     *
+     * <p>Cuando la condición es satisfecha, las siguientes operaciones fueron realizadas:</p>
+     * <ol>
+     *   <li>La casilla de origen de la caja fue liberada en el tablero.</li>
+     *   <li>Las coordenadas internas de la caja fueron actualizadas al destino.</li>
+     *   <li>La caja fue posicionada en la casilla destino del tablero.</li>
+     * </ol>
+     *
+     * @param casillaActual la casilla portal sobre la que la entidad fue posicionada
+     * @param tablero       el tablero sobre el que la teletransportación fue ejecutada
+     * @param entidad       la entidad que pisó el portal; solo actúa si es una {@link Caja}
      */
     @Override
-    public void iniciarAccion() {
-        // La teletransportación fue registrada entre el origen y el destino.
-        // La reubicación del personaje fue prevista para ser ejecutada por el Tablero.
+    public void iniciarAccion(Casilla casillaActual, Tablero tablero, Casilla entidad) {
+        // La regla de negocio fue aplicada: solo las cajas son teletransportadas.
+        if (!(entidad instanceof Caja)) {
+            return;
+        }
+
+        if (tablero == null || !tablero.estaDentroDelTablero(filaDestino, columnaDestino)) {
+            return;
+        }
+
+        Caja caja = (Caja) entidad;
+
+        // La posición de origen fue liberada en el tablero antes del salto espacial.
+        int filaOrigen = caja.getFila();
+        int columnaOrigen = caja.getColumna();
+        Casilla reemplazoOrigen = tablero.esMeta(filaOrigen, columnaOrigen)
+                ? new Meta(filaOrigen, columnaOrigen)
+                : new Suelo(filaOrigen, columnaOrigen);
+        tablero.actualizarCasilla(filaOrigen, columnaOrigen, reemplazoOrigen);
+
+        // Las coordenadas de la caja fueron actualizadas al destino y el tablero fue reflejado.
+        caja.setFila(filaDestino);
+        caja.setColumna(columnaDestino);
+        caja.setEnMeta(tablero.esMeta(filaDestino, columnaDestino));
+        tablero.actualizarCasilla(filaDestino, columnaDestino, caja);
     }
 
     /**
-     * La casilla de origen fue retornada para consulta.
+     * La fila del punto de destino fue retornada para consulta externa.
      *
-     * @return la {@link Casilla} de origen registrada en esta acción
+     * @return la fila de la casilla destino registrada en esta acción
      */
-    public Casilla getCasillaOrigen() {
-        return casillaOrigen;
+    public int getFilaDestino() {
+        return filaDestino;
     }
 
     /**
-     * La casilla de destino fue retornada para consulta.
+     * La columna del punto de destino fue retornada para consulta externa.
      *
-     * @return la {@link Casilla} de destino registrada en esta acción
+     * @return la columna de la casilla destino registrada en esta acción
      */
-    public Casilla getCasillaDestino() {
-        return casillaDestino;
+    public int getColumnaDestino() {
+        return columnaDestino;
     }
 }

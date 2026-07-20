@@ -4,10 +4,13 @@ import ec.edu.epn.sokoban.model.interfaces.Accion;
 
 /**
  * La clase {@code Normal} fue definida como la implementación concreta de la
- * interfaz {@link Accion} correspondiente al comportamiento de movimiento estándar.
+ * interfaz {@link Accion} correspondiente al comportamiento de movimiento estándar
+ * sobre un suelo común.
  *
  * <p>Una acción de tipo {@code Normal} fue diseñada para representar el desplazamiento
- * ordinario del personaje en el tablero, sin efectos especiales adicionales.</p>
+ * ordinario del personaje o de una caja sin efectos especiales adicionales.
+ * El método {@link #iniciarAccion(Casilla, Tablero, Casilla)} fue implementado como
+ * inerte: ninguna lógica adicional es aplicada sobre la entidad o el tablero.</p>
  *
  * <p>La responsabilidad de encapsular este comportamiento fue asignada a esta clase
  * dentro del Patrón Strategy, tal como fue especificado en el diagrama UML revisado.</p>
@@ -23,16 +26,19 @@ public class Normal implements Accion {
     }
 
     /**
-     * La acción de movimiento normal fue iniciada.
+     * La acción de movimiento normal fue iniciada y retornada inmediatamente.
      *
-     * <p>Este comportamiento fue concebido como el flujo de desplazamiento
-     * estándar del personaje: sin teletransportación ni efectos especiales.
-     * La lógica de movimiento efectiva fue delegada al {@code GestorColisiones}
-     * mediante el motor del juego.</p>
+     * <p>Este comportamiento fue concebido como inerte: el suelo ordinario no aplica
+     * ningún efecto especial sobre la entidad que lo pisa. La lógica de movimiento
+     * efectiva fue delegada previamente al {@code GestorColisiones}.</p>
+     *
+     * @param casillaActual la casilla de suelo sobre la que la entidad fue posicionada
+     * @param tablero       el tablero activo (no utilizado en esta implementación)
+     * @param entidad       la entidad que pisó la casilla (no utilizada en esta implementación)
      */
     @Override
-    public void iniciarAccion() {
-        // La acción de movimiento normal fue registrada.
-        // La delegación al motor de colisiones fue prevista en la capa de reglas.
+    public void iniciarAccion(Casilla casillaActual, Tablero tablero, Casilla entidad) {
+        // La acción normal fue definida como comportamiento nulo.
+        // Ningún efecto adicional fue concebido para el suelo ordinario.
     }
 }
