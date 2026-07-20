@@ -12,7 +12,7 @@ public class Suelo extends Casilla implements Transitable {
     }
 
     @Override
-    public boolean esTransitable() {
+    public boolean verificarTransitabilidad() {
         return true;
     }
 

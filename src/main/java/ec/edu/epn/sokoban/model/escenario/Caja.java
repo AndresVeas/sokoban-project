@@ -2,12 +2,14 @@ package ec.edu.epn.sokoban.model.escenario;
 
 import ec.edu.epn.sokoban.Direccion;
 import ec.edu.epn.sokoban.model.interfaces.Dibujador;
-import ec.edu.epn.sokoban.model.interfaces.Empujable;
 
 /**
- * Una caja del escenario es representada como una casilla no transitable y empujable.
+ * La clase Caja fue definida como una casilla no transitable y empujable.
+ * La verificación de empuje fue integrada directamente en esta clase,
+ * eliminando la dependencia sobre la interfaz {@code Empujable},
+ * tal como fue especificado en el diagrama UML revisado.
  */
-public class Caja extends Casilla implements Empujable {
+public class Caja extends Casilla {
     private boolean enMeta;
 
     /**
@@ -83,7 +85,13 @@ public class Caja extends Casilla implements Empujable {
         this.enMeta = enMeta;
     }
 
-    @Override
+    /**
+     * La condición de empujabilidad fue confirmada como invariablemente verdadera.
+     * Este método fue retenido como comportamiento propio de la clase,
+     * sin dependencia de ninguna interfaz externa.
+     *
+     * @return {@code true} de forma incondicional, dado que toda caja fue diseñada para ser empujable.
+     */
     public boolean esEmpujable() {
         return true;
     }

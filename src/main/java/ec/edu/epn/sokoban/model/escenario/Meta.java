@@ -13,7 +13,7 @@ public class Meta extends Casilla implements Transitable {
     }
 
     @Override
-    public boolean esTransitable() {
+    public boolean verificarTransitabilidad() {
         return true;
     }
 

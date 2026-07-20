@@ -152,7 +152,7 @@ public class Tablero extends Casilla {
      */
     public boolean esCeldaTransitable(int f, int c) {
         Casilla casilla = obtenerCasilla(f, c);
-        return casilla != null && casilla instanceof Transitable && ((Transitable) casilla).esTransitable();
+        return casilla != null && casilla instanceof Transitable && ((Transitable) casilla).verificarTransitabilidad();
     }
 
     public boolean estaDentroDelTablero(int fila, int columna) {

@@ -1,12 +1,15 @@
 package ec.edu.epn.sokoban.model.interfaces;
 
 /**
- * Interfaz que marca una casilla como transitable (se puede caminar sobre ella).
+ * La interfaz Transitable fue definida para marcar las casillas sobre las cuales
+ * el personaje o las cajas pueden desplazarse. Su contrato fue reducido a un
+ * único método de verificación, tal como fue especificado en el diagrama UML revisado.
  */
 public interface Transitable {
     /**
-     * Verifica si una casilla es transitable por el jugador.
-     * @return true si es transitable, false en caso contrario.
+     * La transitabilidad de la casilla fue verificada.
+     *
+     * @return {@code true} si la casilla permite el paso; {@code false} en caso contrario.
      */
-    boolean esTransitable();
+    boolean verificarTransitabilidad();
 }
