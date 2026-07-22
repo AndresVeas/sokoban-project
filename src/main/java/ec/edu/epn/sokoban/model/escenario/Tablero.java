@@ -108,6 +108,25 @@ public class Tablero extends Casilla {
         celdas[f][c] = nuevaCasilla;
     }
 
+    /**
+     * Reemplaza el terreno de una posicion de forma PERMANENTE (por ejemplo,
+     * cuando una pared es destruida por una explosion). A diferencia de
+     * actualizarCasilla(), este metodo tambien actualiza casillasBase, para
+     * que restaurarCasillaBase() (invocado cuando un Personaje o Caja
+     * abandona esa posicion) no reconstruya el terreno anterior.
+     *
+     * @param f fila de la posicion a modificar
+     * @param c columna de la posicion a modificar
+     * @param nuevoTerreno la nueva casilla de terreno (por ejemplo, un Suelo)
+     */
+    public void reemplazarTerrenoPermanente(int f, int c, Casilla nuevoTerreno) {
+        if (!estaDentroDelTablero(f, c)) {
+            return;
+        }
+        casillasBase[f][c] = nuevoTerreno;
+        actualizarCasilla(f, c, nuevoTerreno);
+    }
+
     public boolean esCeldaTransitable(int f, int c) {
         Casilla casilla = obtenerCasilla(f, c);
         return casilla != null && casilla instanceof Transitable && ((Transitable) casilla).verificarTransitabilidad();

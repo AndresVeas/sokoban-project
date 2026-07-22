@@ -1,12 +1,6 @@
 package ec.edu.epn.sokoban.model.factory;
 
-import ec.edu.epn.sokoban.model.escenario.Tablero;
-import ec.edu.epn.sokoban.model.escenario.Casilla;
-import ec.edu.epn.sokoban.model.escenario.Pared;
-import ec.edu.epn.sokoban.model.escenario.Suelo;
-import ec.edu.epn.sokoban.model.escenario.Meta;
-import ec.edu.epn.sokoban.model.escenario.Caja;
-import ec.edu.epn.sokoban.model.escenario.Personaje;
+import ec.edu.epn.sokoban.model.escenario.*;
 import ec.edu.epn.sokoban.model.historial.Nivel;
 
 /**
@@ -63,6 +57,10 @@ public class FabricaNiveles {
                 cajaEnMeta.setEnMeta(true);
                 metas[fila][columna] = true;
                 return cajaEnMeta;
+            case "X":
+                Caja cajaExplosiva = new Caja(fila, columna);
+                cajaExplosiva.getGestorAcciones().agregarAccion(new Explosion());
+                return cajaExplosiva;
 
             case "@":
                 return new Personaje(fila, columna);

@@ -109,6 +109,7 @@ public class PanelTablero extends GridPane implements Dibujador<StackPane> {
         sprites.put("META", cargarImagen("/images/goal.png"));
         sprites.put("CAJA", cargarImagen("/images/box.png"));
         sprites.put("JUGADOR", cargarImagen("/images/player.png"));
+        sprites.put("CAJA_EXPLOSIVA", cargarImagen("/images/explosionBox.png"));
     }
 
     private Image cargarImagen(String ruta) {
@@ -189,7 +190,7 @@ public class PanelTablero extends GridPane implements Dibujador<StackPane> {
 
     private double obtenerTamanoSprite(String claveSprite) {
         return switch (claveSprite) {
-            case "CAJA" -> tamCelda * 0.78;
+            case "CAJA", "CAJA_EXPLOSIVA" -> tamCelda * 0.78;
             case "JUGADOR" -> tamCelda * 0.88;
             case "META" -> tamCelda * 0.97;
             default -> tamCelda;
@@ -242,7 +243,9 @@ public class PanelTablero extends GridPane implements Dibujador<StackPane> {
         if (caja.isEnMeta()) {
             agregarSprite(celda, "META", Color.web("#F4D35E"));
         }
-        agregarSprite(celda, "CAJA", Color.web("#B8793B"));
+        String claveSprite = tieneExplosion(caja) ? "CAJA_EXPLOSIVA" : "CAJA";
+        agregarSprite(celda, claveSprite, Color.web("#B8793B"));
+
     }
 
     @Override
@@ -284,5 +287,15 @@ public class PanelTablero extends GridPane implements Dibujador<StackPane> {
 
     private Color obtenerColorRespaldoParaAccion(String spriteKey) {
         return Color.TRANSPARENT;
+    }
+
+    /**
+     * Meotodo privado que permite saber si una caja tiene o no explosion
+     * @param caja
+     * @return
+     */
+    private boolean tieneExplosion(Caja caja) {
+        return caja.getGestorAcciones().getAcciones().stream()
+                .anyMatch(accion -> accion instanceof Explosion);
     }
 }
