@@ -249,7 +249,7 @@ public class PanelTablero extends GridPane implements Dibujador<StackPane> {
     public void dibujarPersonaje(Personaje personaje, StackPane celda, int tamCelda) {
         agregarSueloBase(celda);
         dibujarAccionesDeCasilla(personaje.getFila(), personaje.getColumna(), celda);
-        if (tablero != null && tablero.esMeta(personaje.getFila(), personaje.getColumna())) {
+        if (tablero != null && tablero.esCeldaMeta(personaje.getFila(), personaje.getColumna())) {
             agregarSprite(celda, "META", Color.web("#F4D35E"));
         }
         agregarSprite(celda, "JUGADOR", Color.web("#4DA6FF"));
