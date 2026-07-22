@@ -276,16 +276,20 @@ public class PanelTablero extends GridPane implements Dibujador<StackPane> {
         if (caja.isEnMeta()) {
             agregarSprite(celda, "META", Color.web("#F4D35E"));
         }
-        if (tieneExplosion(caja)) {
-            agregarSprite(celda, "CAJA_EXPLOSIVA", Color.web("#D32F2F"));
-        } else {
-            agregarSprite(celda, "CAJA", Color.web("#B8793B"));
-        }
-    }
 
-    private boolean tieneExplosion(Caja caja) {
-        return caja != null && caja.getGestorAcciones().getAcciones().stream()
-                .anyMatch(accion -> accion instanceof Explosion);
+        String spriteKey = "CAJA";
+        if (caja != null) {
+            for (Accion accion : caja.getGestorAcciones().getAcciones()) {
+                String key = accion.getSpriteKey();
+                if (key != null && !key.isEmpty()) {
+                    spriteKey = key;
+                    break;
+                }
+            }
+        }
+
+        Color colorRespaldo = spriteKey.equals("CAJA") ? Color.web("#B8793B") : obtenerColorRespaldoParaAccion(spriteKey);
+        agregarSprite(celda, spriteKey, colorRespaldo);
     }
 
     @Override
@@ -313,7 +317,7 @@ public class PanelTablero extends GridPane implements Dibujador<StackPane> {
 
     private void dibujarAccionesDeCasilla(int fila, int columna, StackPane celda) {
         if (tablero == null) return;
-        Casilla casilla = tablero.obtenerCasilla(fila, columna);
+        Casilla casilla = tablero.obtenerCasillaBase(fila, columna);
         if (casilla != null) {
             for (Accion accion : casilla.getGestorAcciones().getAcciones()) {
                 String spriteKey = accion.getSpriteKey();
@@ -332,6 +336,7 @@ public class PanelTablero extends GridPane implements Dibujador<StackPane> {
             case "AGRIETADO_ROTO" -> Color.web("#1F1712");
             case "LAVA" -> Color.web("#FF4500"); // Grupo 2: respaldo naranja/rojo
             case "PORTAL" -> Color.web("#8A2BE2");
+            case "CAJA_EXPLOSIVA" -> Color.web("#D32F2F");
             default -> Color.TRANSPARENT;
         };
     }

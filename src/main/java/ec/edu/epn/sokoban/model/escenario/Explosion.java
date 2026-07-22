@@ -59,4 +59,8 @@ public class Explosion implements Accion {
         this.detonada = detonada;
     }
 
+    @Override
+    public String getSpriteKey() {
+        return "CAJA_EXPLOSIVA";
+    }
 }

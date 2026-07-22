@@ -1,0 +1,741 @@
+================================================================================
+DOCUMENTACION DEL MODELO (PAQUETE model/)
+================================================================================
+
+INDICE:
+1. Clase Principal: JuegoSokoban
+2. Subpaquete model.escenario
+   - Casilla
+   - Caja
+   - Meta
+   - Pared
+   - Personaje
+   - Suelo
+   - Tablero
+   - GestorAcciones
+   - Agrietado
+   - Azar
+   - Explosion
+   - Lava
+   - Teletransportacion
+3. Subpaquete model.factory
+   - FabricaNiveles
+   - CargadorTablero
+4. Subpaquete model.historial
+   - Nivel
+   - PartidaMomento
+   - HistorialMovimientos
+5. Subpaquete model.interfaces
+   - Accion
+   - Dibujador
+   - Transitable
+6. Subpaquete model.persistencia
+   - GestorPersistencia
+7. Subpaquete model.reglas
+   - ReglasJuego
+   - GestorColisiones
+8. Métodos y Atributos Específicos para Comportamientos de Acciones
+
+================================================================================
+
+Clase: JuegoSokoban
+Atributos:
+- nivelesDisponibles
+
+Métodos:
++ JuegoSokoban()
++ seleccionarNivel()
++ reiniciarNivelActual()
++ agregarNivel()
++ deshacerUltimaAccion()
++ capturarEstadoActual()
++ registrarVictoria()
+
+getters()
++ getNivelesDisponibles()
++ getNivelActual()
++ getTableroActual()
++ getReglasJuego()
++ getPersistencia()
++ getHistorial()
+
+setters()
+(No posee setters directos)
+
+Enlaces:
+- Agregación de JuegoSokoban a Nivel con flecha en Nivel
+- Asociación de JuegoSokoban a Tablero con flecha en Tablero
+- Asociación de JuegoSokoban a HistorialMovimientos con flecha en HistorialMovimientos
+- Asociación de JuegoSokoban a GestorPersistencia con flecha en GestorPersistencia
+- Dependencia de JuegoSokoban a FabricaNiveles con flecha en FabricaNiveles
+- Dependencia de JuegoSokoban a PartidaMomento con flecha en PartidaMomento
+- Dependencia de JuegoSokoban a ReglasJuego con flecha en ReglasJuego
+
+================================================================================
+SUBPAQUETE model.escenario
+================================================================================
+
+Clase (Abstracta): Casilla
+Atributos:
+- fila
+- columna
+
+Métodos:
++ Casilla()
++ mover()
++ dibujar()
+
+getters()
++ getFila()
++ getColumna()
++ getGestorAcciones()
+
+setters()
++ setFila()
++ setColumna()
+
+Enlaces:
+- Asociación de Casilla a GestorAcciones con flecha en GestorAcciones
+- Dependencia de Casilla a Dibujador con flecha en Dibujador
+
+--------------------------------------------------------------------------------
+
+Clase: Caja
+Atributos:
+- enMeta
+
+Métodos:
++ Caja()
++ esEmpujable()
++ dibujar()
+
+getters()
++ isEnMeta()
+
+setters()
++ setEnMeta()
+
+Enlaces:
+- Herencia de Caja a Casilla con flecha en Casilla
+- Dependencia de Caja a Dibujador con flecha en Dibujador
+
+--------------------------------------------------------------------------------
+
+Clase: Meta
+Atributos:
+(No posee atributos propios)
+
+Métodos:
++ Meta()
++ verificarTransitabilidad()
++ dibujar()
+
+getters()
+(Hereda los getters de Casilla)
+
+setters()
+(Hereda los setters de Casilla)
+
+Enlaces:
+- Herencia de Meta a Casilla con flecha en Casilla
+- Realización de Meta a Transitable con flecha en Transitable
+- Dependencia de Meta a Dibujador con flecha en Dibujador
+
+--------------------------------------------------------------------------------
+
+Clase: Pared
+Atributos:
+(No posee atributos propios)
+
+Métodos:
++ Pared()
++ dibujar()
+
+getters()
+(Hereda los getters de Casilla)
+
+setters()
+(Hereda los setters de Casilla)
+
+Enlaces:
+- Herencia de Pared a Casilla con flecha en Casilla
+- Dependencia de Pared a Dibujador con flecha en Dibujador
+
+--------------------------------------------------------------------------------
+
+Clase: Personaje
+Atributos:
+(No posee atributos propios)
+
+Métodos:
++ Personaje()
++ mover()
++ dibujar()
+
+getters()
+(Hereda los getters de Casilla)
+
+setters()
+(Hereda los setters de Casilla)
+
+Enlaces:
+- Herencia de Personaje a Casilla con flecha en Casilla
+- Dependencia de Personaje a GestorColisiones con flecha en GestorColisiones
+- Dependencia de Personaje a Tablero con flecha en Tablero
+- Dependencia de Personaje a Direccion con flecha en Direccion
+- Dependencia de Personaje a Dibujador con flecha en Dibujador
+
+--------------------------------------------------------------------------------
+
+Clase: Suelo
+Atributos:
+(No posee atributos propios)
+
+Métodos:
++ Suelo()
++ verificarTransitabilidad()
++ dibujar()
+
+getters()
+(Hereda los getters de Casilla)
+
+setters()
+(Hereda los setters de Casilla)
+
+Enlaces:
+- Herencia de Suelo a Casilla con flecha en Casilla
+- Realización de Suelo a Transitable con flecha en Transitable
+- Dependencia de Suelo a Dibujador con flecha en Dibujador
+
+--------------------------------------------------------------------------------
+
+Clase: Tablero
+Atributos:
+- filas
+- columnas
+- celdas
+- metas
+- casillasBase
+
+Métodos:
++ Tablero()
++ esCeldaMeta()
++ obtenerCasilla()
++ actualizarCasilla()
++ reemplazarTerrenoPermanente()
++ esCeldaTransitable()
++ estaDentroDelTablero()
++ esCeldaCaja()
++ obtenerCajaEnPosicion()
++ restaurarCasillaBase()
++ obtenerCasillaBase()
++ dibujar()
+- liberarPosicion()
+
+getters()
++ getFilas()
++ getColumnas()
++ getPersonaje()
+
+setters()
+(No posee setters directos)
+
+Enlaces:
+- Herencia de Tablero a Casilla con flecha en Casilla
+- Composición de Tablero a Casilla con flecha en Casilla
+- Asociación de Tablero a Personaje con flecha en Personaje
+- Dependencia de Tablero a Caja con flecha en Caja
+- Dependencia de Tablero a Meta con flecha en Meta
+- Dependencia de Tablero a Suelo con flecha en Suelo
+- Dependencia de Tablero a Transitable con flecha en Transitable
+
+--------------------------------------------------------------------------------
+
+Clase: GestorAcciones
+Atributos:
+- acciones
+
+Métodos:
++ GestorAcciones()
++ agregarAccion()
++ quitarAccion()
++ ejecutarAcciones()
++ puedenIngresarAcciones()
+
+getters()
++ getAcciones()
+
+setters()
+(No posee setters directos)
+
+Enlaces:
+- Asociación de GestorAcciones a Accion con flecha en Accion
+- Dependencia de GestorAcciones a Casilla con flecha en Casilla
+- Dependencia de GestorAcciones a Tablero con flecha en Tablero
+
+--------------------------------------------------------------------------------
+
+Clase: Agrietado
+Atributos:
+- agrietado
+- roto
+
+Métodos:
++ iniciarAccion()
++ getSpriteKey()
++ registrarNotificadorReinicio()
++ registrarNotificadorDerrota()
+
+getters()
++ isAgrietado()
++ isRoto()
+
+setters()
++ setAgrietado()
++ setRoto()
+
+Enlaces:
+- Realización de Agrietado a Accion con flecha en Accion
+- Dependencia de Agrietado a Personaje con flecha en Personaje
+
+--------------------------------------------------------------------------------
+
+Clase: Azar
+Atributos:
+- probabilidadExito
+
+Métodos:
++ Azar()
++ iniciarAccion()
++ puedeIngresarEntidad()
++ getSpriteKey()
++ registrarNotificadorDerrota()
+
+getters()
+(No posee getters directos)
+
+setters()
+(No posee setters directos)
+
+Enlaces:
+- Realización de Azar a Accion con flecha en Accion
+- Dependencia de Azar a Personaje con flecha en Personaje
+- Dependencia de Azar a Caja con flecha en Caja
+
+--------------------------------------------------------------------------------
+
+Clase: Explosion
+Atributos:
+- detonada
+
+Métodos:
++ iniciarAccion()
++ getSpriteKey()
+
+getters()
++ isDetonada()
+
+setters()
++ setDetonada()
+
+Enlaces:
+- Realización de Explosion a Accion con flecha en Accion
+- Dependencia de Explosion a Pared con flecha en Pared
+- Dependencia de Explosion a Suelo con flecha en Suelo
+
+--------------------------------------------------------------------------------
+
+Clase: Lava
+Atributos:
+(No posee atributos propios)
+
+Métodos:
++ iniciarAccion()
++ puedeIngresarEntidad()
++ getSpriteKey()
++ registrarNotificadorDerrota()
+
+getters()
+(No posee getters directos)
+
+setters()
+(No posee setters directos)
+
+Enlaces:
+- Realización de Lava a Accion con flecha en Accion
+
+--------------------------------------------------------------------------------
+
+Clase: Teletransportacion
+Atributos:
+- filaDestino
+- columnaDestino
+
+Métodos:
++ Teletransportacion()
++ iniciarAccion()
++ puedeIngresarEntidad()
++ getSpriteKey()
+
+getters()
++ getFilaDestino()
++ getColumnaDestino()
+
+setters()
+(No posee setters directos)
+
+Enlaces:
+- Realización de Teletransportacion a Accion con flecha en Accion
+- Dependencia de Teletransportacion a Caja con flecha en Caja
+
+================================================================================
+SUBPAQUETE model.factory
+================================================================================
+
+Clase: FabricaNiveles
+Atributos:
+(No posee atributos)
+
+Métodos:
++ FabricaNiveles()
++ construirTablero()
+- crearCasilla()
+
+getters()
+(Ninguno)
+
+setters()
+(Ninguno)
+
+Enlaces:
+- Dependencia de FabricaNiveles a Nivel con flecha en Nivel
+- Dependencia de FabricaNiveles a Tablero con flecha en Tablero
+- Dependencia de FabricaNiveles a Casilla con flecha en Casilla
+- Dependencia de FabricaNiveles a CargadorTablero con flecha en CargadorTablero
+- Dependencia de FabricaNiveles a Agrietado con flecha en Agrietado
+- Dependencia de FabricaNiveles a Azar con flecha en Azar
+- Dependencia de FabricaNiveles a Explosion con flecha en Explosion
+- Dependencia de FabricaNiveles a Lava con flecha en Lava
+- Dependencia de FabricaNiveles a Teletransportacion con flecha en Teletransportacion
+
+--------------------------------------------------------------------------------
+
+Clase: CargadorTablero
+Atributos:
+(No posee atributos)
+
+Métodos:
++ cargar()
+
+getters()
+(Ninguno)
+
+setters()
+(Ninguno)
+
+Enlaces:
+- Dependencia de CargadorTablero a Tablero con flecha en Tablero
+- Dependencia de CargadorTablero a Casilla con flecha en Casilla
+
+================================================================================
+SUBPAQUETE model.historial
+================================================================================
+
+Clase: Nivel
+Atributos:
+- completado
+- mapaDatos
+
+Métodos:
++ Nivel()
++ marcarComoCompletado()
+- copiarMatriz()
+
+getters()
++ getReglasJuego()
++ isCompletado()
++ getMapaDatos()
+
+setters()
++ setReglasJuego()
++ setCompletado()
+
+Enlaces:
+- Asociación de Nivel a ReglasJuego con flecha en ReglasJuego
+
+--------------------------------------------------------------------------------
+
+Clase: PartidaMomento
+Atributos:
+- celdasSnapshot
+- filas
+- columnas
+
+Métodos:
++ PartidaMomento()
++ restaurarEnTablero()
+- copiarCasilla()
+- copiarAccion()
+
+getters()
+(No posee getters directos)
+
+setters()
+(No posee setters directos)
+
+Enlaces:
+- Composición de PartidaMomento a Casilla con flecha en Casilla
+- Dependencia de PartidaMomento a Tablero con flecha en Tablero
+
+--------------------------------------------------------------------------------
+
+Clase: HistorialMovimientos
+Atributos:
+- movimientosContador
+- historial
+
+Métodos:
++ HistorialMovimientos()
++ registrarEstado()
++ extraerUltimoEstado()
++ vaciarHistorial()
+
+getters()
++ getMovimientosContador()
+
+setters()
+(No posee setters directos)
+
+Enlaces:
+- Asociación de HistorialMovimientos a PartidaMomento con flecha en PartidaMomento
+
+================================================================================
+SUBPAQUETE model.interfaces
+================================================================================
+
+Interfaz: Accion
+Atributos:
+(Las interfaces no poseen atributos de instancia)
+
+Métodos:
++ iniciarAccion()
++ getSpriteKey()
++ puedeIngresarEntidad()
+
+getters()
+(Ninguno)
+
+setters()
+(Ninguno)
+
+Enlaces:
+- Dependencia de Accion a Casilla con flecha en Casilla
+- Dependencia de Accion a Tablero con flecha en Tablero
+
+--------------------------------------------------------------------------------
+
+Interfaz: Dibujador
+Atributos:
+(Las interfaces no poseen atributos de instancia)
+
+Métodos:
++ dibujarPared()
++ dibujarCaja()
++ dibujarPersonaje()
++ dibujarMeta()
++ dibujarSuelo()
+
+getters()
+(Ninguno)
+
+setters()
+(Ninguno)
+
+Enlaces:
+- Dependencia de Dibujador a Pared con flecha en Pared
+- Dependencia de Dibujador a Caja con flecha en Caja
+- Dependencia de Dibujador a Personaje con flecha en Personaje
+- Dependencia de Dibujador a Meta con flecha en Meta
+- Dependencia de Dibujador a Suelo con flecha en Suelo
+
+--------------------------------------------------------------------------------
+
+Interfaz: Transitable
+Atributos:
+(Las interfaces no poseen atributos de instancia)
+
+Métodos:
++ verificarTransitabilidad()
+
+getters()
+(Ninguno)
+
+setters()
+(Ninguno)
+
+Enlaces:
+(Sin asociaciones atributivas directas)
+
+================================================================================
+SUBPAQUETE model.persistencia
+================================================================================
+
+Clase: GestorPersistencia
+Atributos:
+- RUTA_RECURSOS_NIVELES
+- archivoRuta
+
+Métodos:
++ GestorPersistencia()
++ guardarProgreso()
++ cargarProgreso()
++ cargarNivelDesdeRecursos()
+
+getters()
+(No posee getters directos)
+
+setters()
+(No posee setters directos)
+
+Enlaces:
+- Dependencia de GestorPersistencia a Nivel con flecha en Nivel
+
+================================================================================
+SUBPAQUETE model.reglas
+================================================================================
+
+Clase: ReglasJuego
+Atributos:
+(No posee atributos propios)
+
+Métodos:
++ ReglasJuego()
++ asociarTablero()
++ verificarVictoria()
+
+getters()
++ getGestorColisiones()
+
+setters()
+(No posee setters directos)
+
+Enlaces:
+- Asociación de ReglasJuego a GestorColisiones con flecha en GestorColisiones
+- Asociación de ReglasJuego a Tablero con flecha en Tablero
+
+--------------------------------------------------------------------------------
+
+Clase: GestorColisiones
+Atributos:
+(No posee atributos)
+
+Métodos:
++ GestorColisiones()
++ procesarMovimiento()
+
+getters()
+(No posee getters directos)
+
+setters()
+(No posee setters directos)
+
+Enlaces:
+- Dependencia de GestorColisiones a Tablero con flecha en Tablero
+- Dependencia de GestorColisiones a Personaje con flecha en Personaje
+- Dependencia de GestorColisiones a Caja con flecha en Caja
+- Dependencia de GestorColisiones a Casilla con flecha en Casilla
+
+================================================================================
+8. METODOS Y ATRIBUTOS ESPECIFICOS PARA COMPORTAMIENTOS DE ACCIONES
+================================================================================
+
+8.1 ACCION: EXPLOSION (Caja Explosiva - Símbolo 'X')
+--------------------------------------------------------------------------------
+Atributos asociados:
+- Explosion:
+  * detonada (boolean) -> estado de detonación de la caja
+
+Métodos asociados:
+- Explosion:
+  * + iniciarAccion(casillaActual, tablero, entidad) -> ejecuta la onda expansiva destruyendo paredes adyacentes y restaurando la casilla base
+  * + getSpriteKey() -> retorna "CAJA_EXPLOSIVA" para identificar el sprite de la caja explosiva de forma polimórfica
+  * + isDetonada()
+  * + setDetonada()
+- Tablero:
+  * + reemplazarTerrenoPermanente(f, c, nuevoTerreno) -> actualiza casillasBase[][] y celdas[][] para que la destrucción de la pared sea permanente
+- GestorColisiones:
+  * + procesarMovimiento(...) -> invoca caja.getGestorAcciones().ejecutarAcciones(...) al fallar el empuje de una caja para activar la detonación por colisión
+- PartidaMomento:
+  * - copiarAccion(Accion a) -> preserva el estado boolean 'detonada' al clonar snapshots para deshacer
+
+--------------------------------------------------------------------------------
+8.2 ACCION: LAVA (Terreno Peligroso - Símbolo 'L')
+--------------------------------------------------------------------------------
+Atributos asociados:
+- Lava:
+  * notificadorDerrota (Runnable, callback de infraestructura Java)
+
+Métodos asociados:
+- Lava:
+  * + iniciarAccion(casillaActual, tablero, entidad) -> activa el notificadorDerrota al ser pisada por personaje o caja
+  * + puedeIngresarEntidad(tablero, entidad) -> retorna true permitiendo el paso para que la entidad caiga
+  * + getSpriteKey() -> retorna "LAVA" para el renderizado
+  * + registrarNotificadorDerrota(Runnable) -> método estático para vincular la respuesta del juego ante la derrota
+- FabricaNiveles:
+  * - crearCasilla(...) -> detecta símbolo 'L', crea Suelo y le agrega new Lava()
+
+--------------------------------------------------------------------------------
+8.3 ACCION: TELETRANSPORTACION (Portales - Símbolo 'T')
+--------------------------------------------------------------------------------
+Atributos asociados:
+- Teletransportacion:
+  * filaDestino (int) -> coordenada de fila de salida del portal pareja
+  * columnaDestino (int) -> coordenada de columna de salida del portal pareja
+
+Métodos asociados:
+- Teletransportacion:
+  * + Teletransportacion(filaDestino, columnaDestino)
+  * + iniciarAccion(casillaActual, tablero, entidad) -> mueve la Caja a las coordenadas destino en el tablero
+  * + puedeIngresarEntidad(tablero, entidad) -> valida que la casilla de destino no esté ocupada o fuera de límites
+  * + getSpriteKey() -> retorna "PORTAL"
+- FabricaNiveles:
+  * - crearCasilla(...) -> mapea pares de portales 'T' calculando las coordenadas del portal pareja
+- PartidaMomento:
+  * - copiarAccion(Accion a) -> instancia una nueva Teletransportacion con las mismas coordenadas de destino
+
+--------------------------------------------------------------------------------
+8.4 ACCION: AGRIETADO (Suelo Quebradizo - Símbolo 'A')
+--------------------------------------------------------------------------------
+Atributos asociados:
+- Agrietado:
+  * agrietado (boolean) -> indica si el suelo ya fue pisado una vez
+  * roto (boolean) -> indica si el suelo colapsó completamente
+
+Métodos asociados:
+- Agrietado:
+  * + iniciarAccion(casillaActual, tablero, entidad) -> cambia estado de intacto a agrietado, de agrietado a roto, y gatilla reinicio si ya está roto
+  * + getSpriteKey() -> retorna "AGRIETADO" o "AGRIETADO_ROTO" según el estado
+  * + isAgrietado() / + setAgrietado()
+  * + isRoto() / + setRoto()
+  * + registrarNotificadorReinicio(Runnable) / + registrarNotificadorDerrota(Runnable)
+- FabricaNiveles:
+  * - crearCasilla(...) -> mapea símbolo 'A' instanciando Suelo con la acción Agrietado
+- PartidaMomento:
+  * - copiarAccion(Accion a) -> copia los valores booleanos de agrietado y roto para el historial de movimientos
+
+--------------------------------------------------------------------------------
+8.5 ACCION: AZAR (Casilla de Misterio/Suerte - Símbolo '?')
+--------------------------------------------------------------------------------
+Atributos asociados:
+- Azar:
+  * probabilidadExito (double) -> porcentaje de probabilidad segura
+
+Métodos asociados:
+- Azar:
+  * + Azar() / + Azar(probabilidadExito)
+  * + iniciarAccion(casillaActual, tablero, entidad) -> evalúa el azar; si falla destruye la entidad o gatilla la derrota
+  * + puedeIngresarEntidad(tablero, entidad) -> retorna true
+  * + getSpriteKey() -> retorna "AZAR"
+  * + registrarNotificadorDerrota(Runnable)
+- FabricaNiveles:
+  * - crearCasilla(...) -> mapea símbolo '?' asignando Azar con probabilidad por defecto (0.80)
