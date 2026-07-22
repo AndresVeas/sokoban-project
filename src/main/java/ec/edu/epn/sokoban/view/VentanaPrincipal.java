@@ -468,9 +468,55 @@ public class VentanaPrincipal extends BorderPane {
 
         int indexActual = juego.getNivelesDisponibles().indexOf(juego.getNivelActual());
         boolean haySiguiente = indexActual >= 0 && indexActual < juego.getNivelesDisponibles().size() - 1;
+        boolean todosCompletados = juego.getNivelesDisponibles() != null && !juego.getNivelesDisponibles().isEmpty()
+                && juego.getNivelesDisponibles().stream().allMatch(ec.edu.epn.sokoban.model.historial.Nivel::isCompletado);
 
         Button btnAccion = new Button();
-        if (haySiguiente) {
+        if (todosCompletados) {
+            lblMensaje.setText("¡JUEGO COMPLETADO!");
+            Label lblSub = new Label("¡Has superado todos los niveles!");
+            lblSub.setStyle("-fx-text-fill: #F0E8D8; -fx-font-size: 16px;");
+            overlay.getChildren().add(lblSub);
+
+            btnAccion.setText("Volver al Menú");
+            btnAccion.setStyle(
+                    "-fx-background-color: linear-gradient(to bottom, #F6B43A, #A86A18);" +
+                            "-fx-text-fill: white;" +
+                            "-fx-font-size: 18px;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-background-radius: 12;" +
+                            "-fx-border-radius: 12;" +
+                            "-fx-border-color: rgba(255,255,255,0.3);" +
+                            "-fx-border-width: 2;" +
+                            "-fx-cursor: hand;" +
+                            "-fx-pref-width: 220px;" +
+                            "-fx-pref-height: 45px;");
+            btnAccion.setOnMouseEntered(e -> btnAccion.setStyle(
+                    "-fx-background-color: linear-gradient(to bottom, #FFD36B, #D48A23);" +
+                            "-fx-text-fill: white;" +
+                            "-fx-font-size: 18px;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-background-radius: 12;" +
+                            "-fx-border-radius: 12;" +
+                            "-fx-border-color: rgba(255,255,255,0.4);" +
+                            "-fx-border-width: 2;" +
+                            "-fx-cursor: hand;" +
+                            "-fx-pref-width: 220px;" +
+                            "-fx-pref-height: 45px;"));
+            btnAccion.setOnMouseExited(e -> btnAccion.setStyle(
+                    "-fx-background-color: linear-gradient(to bottom, #F6B43A, #A86A18);" +
+                            "-fx-text-fill: white;" +
+                            "-fx-font-size: 18px;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-background-radius: 12;" +
+                            "-fx-border-radius: 12;" +
+                            "-fx-border-color: rgba(255,255,255,0.3);" +
+                            "-fx-border-width: 2;" +
+                            "-fx-cursor: hand;" +
+                            "-fx-pref-width: 220px;" +
+                            "-fx-pref-height: 45px;"));
+            btnAccion.setOnAction(e -> gestorVentanas.mostrarMenu());
+        } else if (haySiguiente) {
             btnAccion.setText("Siguiente Nivel");
             btnAccion.setStyle(
                     "-fx-background-color: linear-gradient(to bottom, #72DD72, #2B882B);" +
@@ -513,14 +559,9 @@ public class VentanaPrincipal extends BorderPane {
                 gestorVentanas.abrirNivel(siguienteNivel);
             });
         } else {
-            lblMensaje.setText("¡JUEGO COMPLETADO!");
-            Label lblSub = new Label("¡Has superado todos los niveles!");
-            lblSub.setStyle("-fx-text-fill: #F0E8D8; -fx-font-size: 16px;");
-            overlay.getChildren().add(lblSub);
-
             btnAccion.setText("Volver al Menú");
             btnAccion.setStyle(
-                    "-fx-background-color: linear-gradient(to bottom, #F6B43A, #A86A18);" +
+                    "-fx-background-color: linear-gradient(to bottom, #72DD72, #2B882B);" +
                             "-fx-text-fill: white;" +
                             "-fx-font-size: 18px;" +
                             "-fx-font-weight: bold;" +
@@ -532,7 +573,7 @@ public class VentanaPrincipal extends BorderPane {
                             "-fx-pref-width: 220px;" +
                             "-fx-pref-height: 45px;");
             btnAccion.setOnMouseEntered(e -> btnAccion.setStyle(
-                    "-fx-background-color: linear-gradient(to bottom, #FFD36B, #D48A23);" +
+                    "-fx-background-color: linear-gradient(to bottom, #8BFF8B, #3CA43C);" +
                             "-fx-text-fill: white;" +
                             "-fx-font-size: 18px;" +
                             "-fx-font-weight: bold;" +
@@ -544,7 +585,7 @@ public class VentanaPrincipal extends BorderPane {
                             "-fx-pref-width: 220px;" +
                             "-fx-pref-height: 45px;"));
             btnAccion.setOnMouseExited(e -> btnAccion.setStyle(
-                    "-fx-background-color: linear-gradient(to bottom, #F6B43A, #A86A18);" +
+                    "-fx-background-color: linear-gradient(to bottom, #72DD72, #2B882B);" +
                             "-fx-text-fill: white;" +
                             "-fx-font-size: 18px;" +
                             "-fx-font-weight: bold;" +
